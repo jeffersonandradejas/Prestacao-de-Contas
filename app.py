@@ -72,9 +72,20 @@ saldo_anterior = st.number_input("Saldo anterior", min_value=0.0, value=0.0)
 assinante = st.text_input("Nome para assinatura do responsável:")
 
 # ============================================
-# >>> RECEITA EXTRA (NOVO)
+# >>> RECEITAS EXTRAS (NOVO)
 # ============================================
-receita_extra = st.number_input("Receita Extra", min_value=0.0, value=0.0)
+st.subheader("Receitas Extras")
+receitas_extras_texto = st.text_area(
+    "Descreva as receitas extras com valores (Ex.: Multa R$ 50,00; Aluguel salão R$ 150,00)"
+)
+
+valores_receitas_extras = re.findall(r"[\d]+[\.,]\d{2}", receitas_extras_texto)
+receitas_extras_total = (
+    sum(float(v.replace(",", ".")) for v in valores_receitas_extras)
+    if valores_receitas_extras else 0.0
+)
+
+st.write(f"**Total Receitas Extras:** R$ {receitas_extras_total:.2f}")
 
 # ============================================
 # RECEITAS (APARTAMENTOS)
@@ -108,8 +119,13 @@ st.subheader("Despesas Extras")
 despesas_extras_texto = st.text_area(
     "Descreva as despesas extras com valores (Ex.: Lâmpada R$ 20,00; Válvula R$ 75,60)"
 )
+
 valores_encontrados = re.findall(r"[\d]+[\.,]\d{2}", despesas_extras_texto)
-despesas_extras_total = sum(float(v.replace(",", ".")) for v in valores_encontrados) if valores_encontrados else 0.0
+despesas_extras_total = (
+    sum(float(v.replace(",", ".")) for v in valores_encontrados)
+    if valores_encontrados else 0.0
+)
+
 st.write(f"**Total Despesas Extras:** R$ {despesas_extras_total:.2f}")
 
 # ============================================
@@ -140,12 +156,12 @@ for apto in apartamentos:
     subtotal_caixa += caixa
 
 # ============================================
-# >>> RECEITA EXTRA ENTRA NO SALDO
+# >>> RECEITAS EXTRAS ENTRAM NO SALDO
 # ============================================
 saldo_atual = (
     saldo_anterior
     + subtotal_taxa
-    + receita_extra
+    + receitas_extras_total
     - total_despesas
     - despesas_extras_total
 )
@@ -154,7 +170,7 @@ saldo_atual = (
 # RESUMO NO APP
 # ============================================
 st.subheader("Resumo Final")
-st.write(f"**Receita Extra:** R$ {receita_extra:.2f}")
+st.write(f"**Total Receitas Extras:** R$ {receitas_extras_total:.2f}")
 st.write(f"**Total de Despesas:** R$ {total_despesas:.2f}")
 st.write(f"**Total Despesas Extras:** R$ {despesas_extras_total:.2f}")
 st.write(f"**Saldo Anterior:** R$ {saldo_anterior:.2f}")
@@ -172,11 +188,16 @@ if st.button("Gerar PDF"):
     pdf.set_font("Arial", "", 11)
     pdf.cell(0, 8, f"Saldo Anterior: R$ {saldo_anterior:.2f}", ln=True)
 
-    # >>> RECEITA EXTRA NO PDF
-    pdf.cell(0, 8, f"Receita Extra: R$ {receita_extra:.2f}", ln=True)
+    # >>> RECEITAS EXTRAS NO PDF
+    pdf.cell(0, 8, f"Total Receitas Extras: R$ {receitas_extras_total:.2f}", ln=True)
+    if receitas_extras_texto.strip():
+        pdf.multi_cell(0, 8, receitas_extras_texto)
+    else:
+        pdf.cell(0, 8, "Não houve receitas extras.", ln=True)
 
+    pdf.ln(4)
     pdf.cell(0, 8, f"Total Despesas: R$ {total_despesas:.2f}", ln=True)
-    pdf.cell(0, 8, f"Despesas Extras: R$ {despesas_extras_total:.2f}", ln=True)
+    pdf.cell(0, 8, f"Total Despesas Extras: R$ {despesas_extras_total:.2f}", ln=True)
 
     pdf.cell(0, 10, f"Saldo Atual: R$ {saldo_atual:.2f}", ln=True)
 
