@@ -429,10 +429,10 @@ if st.button("Gerar PDF"):
 
 import io
 
-# Em vez de pdf.output("prestacao_contas.pdf")
-pdf_bytes = pdf.output(dest='S').encode('latin1')  # gera PDF em memória
+pdf_buffer = io.BytesIO()
+pdf.output(pdf_buffer)  # escreve o PDF no buffer
+pdf_bytes = pdf_buffer.getvalue()  # pega os bytes para download
 
-st.success("PDF gerado com sucesso! ✅")
 st.download_button(
     label="Baixar PDF",
     data=pdf_bytes,
