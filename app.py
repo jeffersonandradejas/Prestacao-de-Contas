@@ -414,12 +414,15 @@ if st.button("Gerar PDF"):
     # ============================================
     #  DOWNLOAD
     # ============================================
-pdf_bytes = pdf.output(dest='S')  # já é bytes
-st.download_button(
-    "📥 Baixar PDF",
-    data=pdf_bytes,
-    file_name="prestacao_contas.pdf",
-    mime="application/pdf"
-)
+    pdf_bytes = bytes(pdf.output(dest='S'))  # CORREÇÃO: bytearray -> bytes
+    st.success("PDF gerado com sucesso!")
+
+    st.download_button(
+        label="Baixar PDF",
+        data=pdf_bytes,
+        file_name=f"Prestacao_Contas_{bloco}.pdf",
+        mime="application/pdf"
+    )
+
 
 
