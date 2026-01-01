@@ -302,12 +302,13 @@ if st.button("Gerar PDF"):
     pdf.set_fill_color(200, 220, 255)
     pdf.set_text_color(*COR_AZUL)
     pdf.set_x(x)
-    pdf.cell(col_apto, 10, "Totais", 1, 0, "C", True)
+    pdf.cell(col_apto, 10, "Subtotal", 1, 0, "C", True)  # <-- título atualizado
     pdf.cell(col_rateio, 10, f"R$ {subtotal_rateio:.2f}", 1, 0, "R", True)
     pdf.cell(col_taxa, 10, f"R$ {subtotal_taxa:.2f}", 1, 0, "R", True)
     pdf.cell(col_caixa, 10, f"R$ {subtotal_caixa:.2f}", 1, 1, "R", True)
     pdf.set_text_color(0)
-    pdf.ln(18)
+    pdf.ln(5)
+
 
     # ============================================
     #  DESPESAS
