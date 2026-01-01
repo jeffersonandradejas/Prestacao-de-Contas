@@ -11,12 +11,10 @@ COR_AZUL_CLARO = (220, 235, 250)
 COR_ZEBRA = (245, 245, 245)
 COR_CINZA = (180, 180, 180)
 
-
 # ============================================
 #      CLASSE CUSTOMIZADA PARA CABEÇALHO / RODAPÉ
 # ============================================
 class PDF(FPDF):
-
     def __init__(self, quadra, bloco, mes_ano, marca_dagua_path):
         super().__init__()
         self.quadra = quadra
@@ -25,17 +23,11 @@ class PDF(FPDF):
         self.marca_dagua_path = marca_dagua_path
 
     def header(self):
-        # Marca d'água em TODAS as páginas
         self.colocar_marca_dagua()
-
         if self.page_no() > 1:
             self.set_text_color(*COR_AZUL)
             self.set_font("Arial", "B", 10)
-            self.cell(
-                0, 6,
-                f"Quadra {self.quadra} | Bloco {self.bloco} | Mês/Ano {self.mes_ano}",
-                ln=True, align="C"
-            )
+            self.cell(0, 6, f"Quadra {self.quadra} | Bloco {self.bloco} | Mês/Ano {self.mes_ano}", ln=True, align="C")
             self.ln(2)
 
     def footer(self):
@@ -44,9 +36,6 @@ class PDF(FPDF):
         self.set_text_color(100)
         self.cell(0, 10, f"Página {self.page_no()}/{{nb}}", align="C")
 
-    # ---------------------------------------------------------
-    # FUNÇÃO DA MARCA D'ÁGUA — CENTRALIZADA
-    # ---------------------------------------------------------
     def colocar_marca_dagua(self):
         try:
             img = Image.open(self.marca_dagua_path).convert("RGBA")
@@ -77,27 +66,23 @@ class PDF(FPDF):
         except Exception as e:
             print("Erro ao carregar marca d’água:", e)
 
-
 # ============================================
 #               STREAMLIT UI
 # ============================================
 st.set_page_config(page_title="Prestação de Contas", layout="centered")
 
 st.markdown("<h1 style='text-align: center;'>Prestação de Contas</h1>", unsafe_allow_html=True)
-st.markdown(
-    """
-    <div style='text-align:center; line-height:1.6;'>
-        <strong>ASSOCIAÇÃO DOS PERMISSIONÁRIOS DO CONJUNTO HABITACIONAL</strong><br>
-        <strong>SGT WALDER XAVIER DE LIMA</strong><br>
-        Av. Armindo Moura, 581 - Quadra E - Loja 04.<br>
-        Boa Viagem - Recife-PE<br>
-        Telefone escritório: 3343-5965<br>
-        Telefone portaria: 3341-0475<br><br>
-        <strong>PRESTAÇÃO DE CONTAS DO BLOCO</strong>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div style='text-align:center; line-height:1.6;'>
+    <strong>ASSOCIAÇÃO DOS PERMISSIONÁRIOS DO CONJUNTO HABITACIONAL</strong><br>
+    <strong>SGT WALDER XAVIER DE LIMA</strong><br>
+    Av. Armindo Moura, 581 - Quadra E - Loja 04.<br>
+    Boa Viagem - Recife-PE<br>
+    Telefone escritório: 3343-5965<br>
+    Telefone portaria: 3341-0475<br><br>
+    <strong>PRESTAÇÃO DE CONTAS DO BLOCO</strong>
+</div>
+""", unsafe_allow_html=True)
 
 # -----------------------------------------------
 # IDENTIFICAÇÃO
@@ -148,14 +133,14 @@ despesas_extras_total = sum(float(v.replace(",", ".")) for v in valores_encontra
 st.write(f"**Total Despesas Extras:** R$ {despesas_extras_total:.2f}")
 
 # -----------------------------------------------
-# RECEITAS EXTRAS
+# RECEITAS EXTRAS (NOVO)
 # -----------------------------------------------
 st.subheader("Receitas Extras")
 receitas_extras_texto = st.text_area(
     "Descreva as receitas extras com valores (Ex.: Aluguel R$ 200,00; Multa R$ 50,00)"
 )
-valores_receitas_encontrados = re.findall(r"[\d]+[\.,]\d{2}", receitas_extras_texto)
-receitas_extras_total = sum(float(v.replace(",", ".")) for v in valores_receitas_encontrados) if valores_receitas_encontrados else 0.0
+valores_receitas_extras = re.findall(r"[\d]+[\.,]\d{2}", receitas_extras_texto)
+receitas_extras_total = sum(float(v.replace(",", ".")) for v in valores_receitas_extras) if valores_receitas_extras else 0.0
 st.write(f"**Total Receitas Extras:** R$ {receitas_extras_total:.2f}")
 
 # -----------------------------------------------
@@ -186,6 +171,9 @@ for apto in apartamentos:
     subtotal_taxa += taxa
     subtotal_caixa += caixa
 
+# -----------------------------
+# SALDO ATUAL (considera receitas extras)
+# -----------------------------
 saldo_atual = saldo_anterior + subtotal_taxa + receitas_extras_total - total_despesas - despesas_extras_total
 
 # -----------------------------------------------
@@ -206,14 +194,12 @@ st.write(f"**Total Receitas Extras:** R$ {receitas_extras_total:.2f}")
 st.write(f"**Saldo Anterior:** R$ {saldo_anterior:.2f}")
 st.write(f"**Saldo Atual:** R$ {saldo_atual:.2f}")
 
-
 # ============================================
 # FUNÇÃO AUXILIAR — CENTRALIZAR TABELAS
 # ============================================
 def centralizar_x(largura_total, margem=15):
     largura_util = 210 - 2 * margem
     return margem + (largura_util - largura_total) / 2
-
 
 # ============================================
 #   BOTÃO — GERAR PDF
@@ -380,7 +366,7 @@ if st.button("Gerar PDF"):
     pdf.ln(18)
 
     # ============================================
-    #  RECEITAS EXTRAS NO PDF
+    #  RECEITAS EXTRAS
     # ============================================
     pdf.set_font("Arial", "B", 12)
     pdf.set_text_color(*COR_AZUL)
@@ -403,30 +389,30 @@ if st.button("Gerar PDF"):
     pdf.ln(18)
 
     # ============================================
-    #  RESUMO FINAL
+    #  SALDO FINAL
     # ============================================
     pdf.set_font("Arial", "B", 12)
     pdf.set_text_color(*COR_AZUL)
-    pdf.cell(0, 10, "Resumo Final", ln=True)
+    pdf.cell(0, 10, "Resumo Final / Saldo", ln=True)
     pdf.ln(6)
 
     pdf.set_font("Arial", "", 11)
+    pdf.set_fill_color(*COR_AZUL_CLARO)
     pdf.set_text_color(0)
     pdf.cell(0, 8, f"Saldo Anterior: R$ {saldo_anterior:.2f}", ln=True)
     pdf.cell(0, 8, f"Saldo Atual: R$ {saldo_atual:.2f}", ln=True)
-    pdf.cell(0, 8, f"Total Despesas: R$ {total_despesas:.2f}", ln=True)
-    pdf.cell(0, 8, f"Total Despesas Extras: R$ {despesas_extras_total:.2f}", ln=True)
-    pdf.cell(0, 8, f"Total Receitas Extras: R$ {receitas_extras_total:.2f}", ln=True)
+    pdf.ln(18)
 
     # ============================================
     #  ASSINATURA
     # ============================================
-    pdf.ln(20)
-    pdf.cell(0, 8, f"Assinatura do responsável: {assinante}", ln=True)
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, f"Responsável: {assinante}", ln=True)
+    pdf.ln(25)
+    pdf.cell(0, 10, "______________________________", ln=True)
 
     # ============================================
-    #  SALVAR PDF
+    #  DOWNLOAD
     # ============================================
-    nome_arquivo = f"Prestacao_de_Contas_{bloco}_{mes_ano.replace('/', '_')}.pdf"
-    pdf.output(nome_arquivo)
-    st.success(f"PDF gerado com sucesso: {nome_arquivo}")
+    pdf_output = pdf.output(dest='S').encode('latin1')
+    st.download_button("📥 Baixar PDF", data=pdf_output, file_name="prestacao_contas.pdf", mime="application/pdf")
