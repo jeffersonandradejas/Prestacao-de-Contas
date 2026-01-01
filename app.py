@@ -215,20 +215,14 @@ def centralizar_x(largura_total, margem=15):
     return margem + (largura_util - largura_total) / 2
 
 
-# ============================================
-#  DOWNLOAD BUTTON 
-# ============================================
-import io
+   # ============================================
+    #  DOWNLOAD BUTTON — CONVERSÃO PARA BYTES
+    # ============================================
+    pdf_bytes = bytes(pdf.output(dest='S'))  # CORREÇÃO: bytearray -> bytes
+    st.success("PDF gerado com sucesso!")
 
-pdf_buffer = io.BytesIO()
-pdf.output(pdf_buffer)  # escreve o PDF no buffer
-pdf_bytes = pdf_buffer.getvalue()  # pega os bytes
-
-st.success("PDF gerado com sucesso!")
-
-st.download_button(
-    label="Baixar PDF",
-    data=pdf_bytes,
-    file_name=f"Prestacao_Contas_{bloco}.pdf",
-    mime="application/pdf"
-)
+    st.download_button(
+        label="Baixar PDF",
+        data=pdf_bytes,
+        file_name=f"Prestacao_Contas_{bloco}.pdf",
+        mime="application/pdf"
