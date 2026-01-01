@@ -216,13 +216,18 @@ def centralizar_x(largura_total, margem=15):
 
 
 # ============================================
-#  DOWNLOAD BUTTON — CONVERSÃO PARA BYTES
+#  DOWNLOAD BUTTON 
 # ============================================
-pdf_bytes = pdf.output(dest="S").encode("latin-1")  # gera o PDF em memória como bytes
+import io
+
+pdf_buffer = io.BytesIO()
+pdf.output(pdf_buffer)  # escreve o PDF no buffer
+pdf_bytes = pdf_buffer.getvalue()  # pega os bytes
+
 st.success("PDF gerado com sucesso!")
 
 st.download_button(
-    label="📥 Baixar PDF",
+    label="Baixar PDF",
     data=pdf_bytes,
     file_name=f"Prestacao_Contas_{bloco}.pdf",
     mime="application/pdf"
