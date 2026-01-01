@@ -225,5 +225,4 @@ pdf_bytes = bytes(pdf.output(dest='S'))  # CORREÇÃO: bytearray -> bytes
         label="Baixar PDF",
         data=pdf_bytes,
         file_name=f"Prestacao_Contas_{bloco}.pdf",
-        mime="application/pdf"
-    )
+        mime="application/pdf")
