@@ -390,19 +390,25 @@ if st.button("Gerar PDF"):
     pdf.ln(18)
 
     # ============================================
-    #  SALDO FINAL
+    #  RESUMO FINAL COMPLETO
     # ============================================
     pdf.set_font("Arial", "B", 12)
     pdf.set_text_color(*COR_AZUL)
-    pdf.cell(0, 10, "Resumo Final / Saldo", ln=True)
+    pdf.cell(0, 10, "Resumo Final", ln=True)
     pdf.ln(6)
 
     pdf.set_font("Arial", "", 11)
     pdf.set_fill_color(*COR_AZUL_CLARO)
     pdf.set_text_color(0)
+
+    pdf.cell(0, 8, f"Total de Despesas: R$ {total_despesas:.2f}", ln=True)
+    pdf.cell(0, 8, f"Total Despesas Extras: R$ {despesas_extras_total:.2f}", ln=True)
+    pdf.cell(0, 8, f"Total Receitas Extras: R$ {receitas_extras_total:.2f}", ln=True)
     pdf.cell(0, 8, f"Saldo Anterior: R$ {saldo_anterior:.2f}", ln=True)
     pdf.cell(0, 8, f"Saldo Atual: R$ {saldo_atual:.2f}", ln=True)
+
     pdf.ln(18)
+
 
     # ============================================
     #  ASSINATURA
