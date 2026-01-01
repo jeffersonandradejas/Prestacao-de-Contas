@@ -427,6 +427,15 @@ if st.button("Gerar PDF"):
     # ============================================
     pdf.cell(0, 10, f"Assinatura: {assinante}", ln=True)
 
-    pdf.output("prestacao_contas.pdf")
-    st.success("PDF gerado com sucesso! ✅")
-    st.markdown("[Baixar PDF](prestacao_contas.pdf)")
+# Gera e salva o PDF em disco
+pdf.output("prestacao_contas.pdf")
+
+# Abre o arquivo salvo e disponibiliza para download
+with open("prestacao_contas.pdf", "rb") as f:
+    st.download_button(
+        label="📥 Baixar PDF",
+        data=f,
+        file_name="prestacao_contas.pdf",
+        mime="application/pdf"
+    )
+
