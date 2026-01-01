@@ -226,3 +226,4 @@ def centralizar_x(largura_total, margem=15):
         data=pdf_bytes,
         file_name=f"Prestacao_Contas_{bloco}.pdf",
         mime="application/pdf"
+    )
