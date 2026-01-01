@@ -218,7 +218,7 @@ def centralizar_x(largura_total, margem=15):
    # ============================================
     #  DOWNLOAD BUTTON — CONVERSÃO PARA BYTES
     # ============================================
-    pdf_bytes = bytes(pdf.output(dest='S'))  # CORREÇÃO: bytearray -> bytes
+pdf_bytes = bytes(pdf.output(dest='S'))  # CORREÇÃO: bytearray -> bytes
     st.success("PDF gerado com sucesso!")
 
     st.download_button(
