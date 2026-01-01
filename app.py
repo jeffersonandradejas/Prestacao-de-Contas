@@ -411,12 +411,13 @@ if st.button("Gerar PDF"):
 
 
     # ============================================
-    #  ASSINATURA
+    #  ASSINATURA DO RESPONSÁVEL
     # ============================================
     pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 10, f"Responsável: {assinante}", ln=True)
-    pdf.ln(25)
-    pdf.cell(0, 10, "______________________________", ln=True)
+    pdf.set_text_color(*COR_AZUL)
+    # Nome do responsável com sublinhado (linha apenas embaixo do nome)
+    pdf.cell(0, 10, f"Responsável: {assinante}", ln=True, align="L", border='B')
+    pdf.ln(5)  # espaçamento depois da linha, opcional
 
 
     # ============================================
