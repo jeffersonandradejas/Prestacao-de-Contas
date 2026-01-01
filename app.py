@@ -414,5 +414,8 @@ if st.button("Gerar PDF"):
     # ============================================
     #  DOWNLOAD
     # ============================================
-    pdf_output = pdf.output(dest='S').encode('latin1')
-    st.download_button("📥 Baixar PDF", data=pdf_output, file_name="prestacao_contas.pdf", mime="application/pdf")
+pdf_bytes = pdf.output(dest='S')
+if isinstance(pdf_bytes, str):
+    pdf_bytes = pdf_bytes.encode('latin-1')
+st.download_button("📥 Baixar PDF", data=pdf_bytes, file_name="prestacao_contas.pdf", mime="application/pdf")
+
